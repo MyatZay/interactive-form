@@ -113,11 +113,10 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
       $(document).ready(function () {
-        // Helper: validate a required text/email/password field
+        // Helper: validate a required text/password field
         function validateRequired(fieldId, errorId, message) {
           const $field = $("#" + fieldId);
           const value = $field.val().trim();
-
           if (value === "") {
             $field.addClass("is-invalid-custom");
             $("#" + errorId).text(message);
@@ -132,21 +131,21 @@
         $("#submitBtn").on("click", function () {
           let isValid = true;
 
-          // Rule 1: If any of the username, email, password or confirmed password is empty
-          if (!validateRequired("username", "usernameError", "this field must not be empty")) {
+          // Rule 1: required fields must not be empty
+          if (!validateRequired("username", "usernameError", "this filed must not be empty")) {
             isValid = false;
           }
-          if (!validateRequired("email", "emailError", "this field must not be empty")) {
+          if (!validateRequired("email", "emailError", "this filed must not be empty")) {
             isValid = false;
           }
-          if (!validateRequired("password", "passwordError", "this field must not be empty")) {
+          if (!validateRequired("password", "passwordError", "this filed must not be empty")) {
             isValid = false;
           }
-          if (!validateRequired("confirmPassword", "confirmPasswordError", "this field must not be empty")) {
+          if (!validateRequired("confirmPassword", "confirmPasswordError", "this filed must not be empty")) {
             isValid = false;
           }
 
-          // Rule 2: At least one of the Interesting Topics choices must be checked
+          // Rule 2: at least one topic checkbox must be checked
           if ($(".topic:checked").length === 0) {
             $("#topicsError").text("At least one topic must be selected");
             isValid = false;
@@ -154,7 +153,7 @@
             $("#topicsError").text("");
           }
 
-          // Rule 3: If the Gender drop down selection is "--" (the first option)
+          // Rule 3: gender must not be left on the default "--"
           if ($("#gender").val() === "--") {
             $("#genderError").text("please choose your gender");
             isValid = false;
@@ -162,7 +161,8 @@
             $("#genderError").text("");
           }
 
-          // Rule 4: If confirmed password value does not match the password value
+          // Rule 4: confirmed password must match password
+          // (only check the match once both fields actually have a value)
           const pwd = $("#password").val();
           const confirmPwd = $("#confirmPassword").val();
           if (pwd !== "" && confirmPwd !== "" && pwd !== confirmPwd) {
