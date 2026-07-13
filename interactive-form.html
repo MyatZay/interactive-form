@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Interactive Web Form Assignment</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      .error-text {
+        color: red;
+        font-size: 0.9rem;
+        margin-top: 3px;
+      }
+      .is-invalid-custom {
+        border-color: red !important;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container mt-5">
+      <div class="card shadow">
+        <div class="card-body">
+          <h3 class="mb-4">Interactive Web Form</h3>
+          
+          <!-- Username -->
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" id="username" class="form-control" />
+            <small id="usernameError" class="error-text"></small>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" id="email" class="form-control" />
+            <small id="emailError" class="error-text"></small>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" id="password" class="form-control" />
+            <small id="passwordError" class="error-text"></small>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" id="confirmPassword" class="form-control" />
+            <small id="confirmPasswordError" class="error-text"></small>
+          </div>
+
+          <!-- Interesting Topics -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Interesting Topics</label>
+            <div class="form-check">
+              <input
+                class="form-check-input topic"
+                type="checkbox"
+                id="topic1"
+                value="HTML"
+              />
+              <label class="form-check-label" for="topic1">HTML</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input topic"
+                type="checkbox"
+                id="topic2"
+                value="CSS"
+              />
+              <label class="form-check-label" for="topic2">CSS</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input topic"
+                type="checkbox"
+                id="topic3"
+                value="JavaScript"
+              />
+              <label class="form-check-label" for="topic3">JavaScript</label>
+            </div>
+            <small id="topicsError" class="error-text"></small>
+          </div>
+
+          <!-- Gender -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Gender</label>
+            <select id="gender" class="form-select">
+              <option value="--">--</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+            <small id="genderError" class="error-text"></small>
+          </div>
+
+          <!-- Submit Button -->
+          <button id="submitBtn" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Helper: validate a required text/password field
+        function validateRequired(fieldId, errorId, message) {
+          const $field = $("#" + fieldId);
+          const value = $field.val().trim();
+          if (value === "") {
+            $field.addClass("is-invalid-custom");
+            $("#" + errorId).text(message);
+            return false;
+          } else {
+            $field.removeClass("is-invalid-custom");
+            $("#" + errorId).text("");
+            return true;
+          }
+        }
+
+        $("#submitBtn").on("click", function () {
+          let isValid = true;
+
+          // Rule 1: required fields must not be empty
+          if (!validateRequired("username", "usernameError", "this filed must not be empty")) {
+            isValid = false;
+          }
+          if (!validateRequired("email", "emailError", "this filed must not be empty")) {
+            isValid = false;
+          }
+          if (!validateRequired("password", "passwordError", "this filed must not be empty")) {
+            isValid = false;
+          }
+          if (!validateRequired("confirmPassword", "confirmPasswordError", "this filed must not be empty")) {
+            isValid = false;
+          }
+
+          // Rule 2: at least one topic checkbox must be checked
+          if ($(".topic:checked").length === 0) {
+            $("#topicsError").text("At least one topic must be selected");
+            isValid = false;
+          } else {
+            $("#topicsError").text("");
+          }
+
+          // Rule 3: gender must not be left on the default "--"
+          if ($("#gender").val() === "--") {
+            $("#genderError").text("please choose your gender");
+            isValid = false;
+          } else {
+            $("#genderError").text("");
+          }
+
+          // Rule 4: confirmed password must match password
+          const pwd = $("#password").val();
+          const confirmPwd = $("#confirmPassword").val();
+          if (pwd !== "" && confirmPwd !== "" && pwd !== confirmPwd) {
+            $("#confirmPassword").addClass("is-invalid-custom");
+            $("#confirmPasswordError").text("confirmed password mismatched the password");
+            isValid = false;
+          } else if (pwd === confirmPwd && pwd !== "") {
+            $("#confirmPassword").removeClass("is-invalid-custom");
+            $("#confirmPasswordError").text("");
+          }
+
+          if (isValid) {
+            alert("Form submitted successfully!");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
